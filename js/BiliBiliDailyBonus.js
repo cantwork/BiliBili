@@ -456,8 +456,7 @@ async function coin() {
 	let like_uid_list = await getFavUid()
 	if (like_uid_list && like_uid_list.length > 0) {
 		let aid = await getFavAid(like_uid_list)
-		//$.log("即将投币的视频aid: " + aid)
-		$.log('config.cookie: ' + jsonToCookieStr(config.cookie))
+		$.log("即将投币的视频aid: " + aid)
 		if (aid !== 0) {
 			const body = {
 				aid,
@@ -468,6 +467,7 @@ async function coin() {
 			}
 			const myRequest = {
 				url: "https://api.bilibili.com/x/web-interface/coin/add",
+				method: 'POST',
 				headers: {
 					'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
 					'Accept': 'application/json, text/plain, */*',
