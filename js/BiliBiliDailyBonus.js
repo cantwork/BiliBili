@@ -474,7 +474,7 @@ async function coin() {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'Referer': 'https://www.bilibili.com/',
 					'Origin': 'https://www.bilibili.com',
-					'Cookie': jsonToCookieStr(config.cookie) + `+; buvid_fp_plain=undefined; CURRENT_BLACKGAP=0; theme_style=light; is-2022-channel=1; bsource_origin=baidu_aladdin; enable_web_push=DISABLE; header_theme_version=CLOSE; rpdid=|(J|)J~JJmmR0J'u~|JullmmR; FEED_LIVE_VERSION=V_HEADER_LIVE_NO_POP; hit-dyn-v2=1; msource=pc_web; deviceFingerprint=ce2e845f6886f53bfc8c13ce5142e0ee; CURRENT_QUALITY=80; LIVE_BUVID=AUTO4917317334265148; match_float_version=ENABLE; fingerprint=e20d3f4310ec5a5e5fb2648abb830fcd; share_source_origin=copy_web; bsource=search_google; home_feed_column=5; CURRENT_FNVAL=4048; bp_t_offset_2633498=1023457068452937728; browser_resolution=2048-1016; b_lsid=6DDBF5F7_1947818A33D`
+					'Cookie': jsonToCookieStr(config.cookie) + `; buvid_fp_plain=undefined; CURRENT_BLACKGAP=0; theme_style=light; is-2022-channel=1; bsource_origin=baidu_aladdin; enable_web_push=DISABLE; header_theme_version=CLOSE; rpdid=|(J|)J~JJmmR0J'u~|JullmmR; FEED_LIVE_VERSION=V_HEADER_LIVE_NO_POP; hit-dyn-v2=1; msource=pc_web; deviceFingerprint=ce2e845f6886f53bfc8c13ce5142e0ee; CURRENT_QUALITY=80; LIVE_BUVID=AUTO4917317334265148; match_float_version=ENABLE; fingerprint=e20d3f4310ec5a5e5fb2648abb830fcd; share_source_origin=copy_web; bsource=search_google; home_feed_column=5; CURRENT_FNVAL=4048; bp_t_offset_2633498=1023457068452937728; browser_resolution=2048-1016; b_lsid=6DDBF5F7_1947818A33D`
 				},
 				body: $.queryStr(body)
 			}
