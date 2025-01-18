@@ -451,6 +451,9 @@ async function coin() {
 	if (like_uid_list && like_uid_list.length > 0) {
 		let aid = await getFavAid(like_uid_list)
 		//$.log("即将投币的视频aid: " + aid)
+		$.log('bili_jct: ' + config.cookie.bili_jct)
+		$.log('buvid3: ' + config.cookie.buvid3)
+		$.log('config.cookie: ' + config.cookie)
 		if (aid !== 0) {
 			const body = {
 				aid,
