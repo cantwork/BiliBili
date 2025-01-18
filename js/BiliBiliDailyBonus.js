@@ -453,7 +453,7 @@ async function coin() {
 		//$.log("即将投币的视频aid: " + aid)
 		$.log('bili_jct: ' + config.cookie.bili_jct)
 		$.log('buvid3: ' + config.cookie.buvid3)
-		$.log('config.cookie: ' + config.cookie)
+		$.log('config.cookie: ' + $.toStr(config.cookie))
 		if (aid !== 0) {
 			const body = {
 				aid,
