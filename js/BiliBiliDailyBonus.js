@@ -203,9 +203,6 @@ async function signBiliBili() {
 			$.log("---- 将尝试额外任务")
 		} else {
 			$.log("---- 经验值任务均已完成,将尝试额外任务")
-			$.log("---- 测试投币----")
-						await coin()
-						$.wait(3000) //减少频繁请求概率
 		}
 		
 		await liveSign()
@@ -449,7 +446,7 @@ async function share(aid, cid, short_link) {
 }
 
 async function coin() {
-	if (config.coins.num >= 100) {
+	if (config.coins.num >= 50) {
 		$.log(`- 今日已完成 ${config.coins.time}`)
 		return
 	}
@@ -478,7 +475,6 @@ async function coin() {
 				},
 				body: $.queryStr(body)
 			}
-			$.log("body: " + $.queryStr(body))
 			await $.fetch(myRequest).then(async response => {
 				try {
 					const body = $.toObj(response.body)
