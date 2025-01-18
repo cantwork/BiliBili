@@ -459,12 +459,12 @@ async function coin() {
 			const myRequest = {
 				url: "https://api.bilibili.com/x/web-interface/coin/add",
 				headers: {
-					'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
-					'accept': 'application/json, text/plain, */*',
-					'content-type': 'application/x-www-form-urlencoded',
-					'origin': 'https://www.bilibili.com',
-					'referer': 'https://www.bilibili.com/video/BV1MT411G7fG?vd_source=1970993e2eff4af7be029aefcfa468b8',
-					'cookie': config.cookieStr + ';buvid3=fuckchenruilovelaoliu'
+					'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/x-www-form-urlencoded',
+					'Referer': 'https://www.bilibili.com/',
+					'Origin': 'https://www.bilibili.com',
+					'Cookie': config.cookieStr + '; buvid3=' + config.cookie.buvid3
 				},
 				body: $.queryStr(body)
 			}
@@ -598,7 +598,7 @@ async function silver2coin() {
 				let detail = `- 原因: ${result.message}`
 				$.log(subTitle)
 				$.log(detail)
-				$.msg(title, subTitle, detail)
+				//$.msg(title, subTitle, detail)
 			}
 			// 兑换失败
 			else {
