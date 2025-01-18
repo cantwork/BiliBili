@@ -68,6 +68,12 @@ const string2object = cookie => {
 	return obj
 }
 
+function jsonToCookieStr(jsonObj) {
+  return Object.entries(jsonObj)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('; ');
+}
+
 const isFlag = exec_times => 
 	config.user.num === 0 ||
 	config.watch.num === 0 ||
@@ -451,9 +457,7 @@ async function coin() {
 	if (like_uid_list && like_uid_list.length > 0) {
 		let aid = await getFavAid(like_uid_list)
 		//$.log("即将投币的视频aid: " + aid)
-		$.log('bili_jct: ' + config.cookie.bili_jct)
-		$.log('buvid3: ' + config.cookie.buvid3)
-		$.log('config.cookie: ' + $.toStr(config.cookie))
+		$.log('config.cookie: ' + jsonToCookieStr(config.cookie))
 		if (aid !== 0) {
 			const body = {
 				aid,
@@ -470,7 +474,7 @@ async function coin() {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'Referer': 'https://www.bilibili.com/',
 					'Origin': 'https://www.bilibili.com',
-					'Cookie': config.cookieStr + '; buvid3=' + config.cookie.buvid3
+					'Cookie': jsonToCookieStr(config.cookie)
 				},
 				body: $.queryStr(body)
 			}
