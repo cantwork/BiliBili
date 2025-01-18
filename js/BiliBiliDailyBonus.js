@@ -68,7 +68,7 @@ const string2object = cookie => {
 	return obj
 }
 
-function jsonToCookieStr(jsonObj) {
+const jsonToCookieStr = jsonObj => {
   return Object.entries(jsonObj)
     .map(([key, value]) => `${key}=${value}`)
     .join('; ');
