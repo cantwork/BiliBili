@@ -476,9 +476,9 @@ async function coin() {
 					'Origin': 'https://www.bilibili.com',
 					'Cookie': jsonToCookieStr(config.cookie)
 				},
-				body: body
+				body: $.queryStr(body)
 			}
-			$.log("body: " + body)
+			$.log("body: " + $.queryStr(body))
 			await $.fetch(myRequest).then(async response => {
 				try {
 					const body = $.toObj(response.body)
