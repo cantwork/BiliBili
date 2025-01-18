@@ -190,13 +190,16 @@ async function signBiliBili() {
 						break
 					} else {
 						await coin()
-						$.wait(300) //减少频繁请求概率
+						$.wait(3000) //减少频繁请求概率
 					}
 				}
 			}
 			$.log("---- 将尝试额外任务")
 		} else {
 			$.log("---- 经验值任务均已完成,将尝试额外任务")
+			$.log("---- 测试投币----")
+						await coin()
+						$.wait(3000) //减少频繁请求概率
 		}
 		
 		await liveSign()
@@ -440,7 +443,7 @@ async function share(aid, cid, short_link) {
 }
 
 async function coin() {
-	if (config.coins.num >= 50) {
+	if (config.coins.num >= 100) {
 		$.log(`- 今日已完成 ${config.coins.time}`)
 		return
 	}
