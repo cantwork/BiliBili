@@ -196,7 +196,7 @@ async function signBiliBili() {
 						break
 					} else {
 						await coin()
-						$.wait(3000) //减少频繁请求概率
+						$.wait(5000) //减少频繁请求概率
 					}
 				}
 			}
@@ -490,6 +490,7 @@ async function coin() {
 						if (config.coins.failures < 11) {
 							$.log("- 正在重试...重试次数 " + (config.coins.failures - 1) + "(超过十次不再重试)")
 							await coin()
+							$.wait(5000) //减少频繁请求概率
 						}
 					}
 				} catch (e) {
