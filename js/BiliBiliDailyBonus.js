@@ -544,10 +544,10 @@ async function getFeedBvid(arr) {
 	let random_int = Math.floor((Math.random()*arr.length))
 	let item = arr[random_int]
 	$.log("- 作者: " + item['owner']['name'] + "; 视频标题: " + item['title'])
-	await sleep(5000); //减少频繁请求概率
+	await sleep(3000); //减少频繁请求概率
 	$.log('- 正在观看这条视频...')
 	await watch(item.id, item.bvid, item.cid)
-	await sleep(11000); //减少频繁请求概率
+	await sleep(5000); //减少频繁请求概率
 	let bvid = item?.bvid
 	return bvid
 }
