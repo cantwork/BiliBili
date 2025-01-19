@@ -551,9 +551,33 @@ async function getFeedBvid(arr) {
 	await sleep(5000); //减少频繁请求概率
 	$.log('- 正在观看这条视频...')
 	await watch(item.id, item.bvid, item.cid)
-	await sleep(3000); //减少频繁请求概率
+	await sleep(5000);
+	await todayExp()
+	await sleep(2000);
 	let bvid = item?.bvid
 	return bvid
+}
+
+async function todayExp() {
+	$.log("#### 获取今日投币的经验值")
+	const myRequest = {
+		url: "https://api.bilibili.com/x/web-interface/coin/today/exp",
+		headers: {
+			'Cookie': jsonToCookieStr(config.cookie)
+		}
+	}
+	await $.fetch(myRequest).then(response => {
+		try {
+			let body = $.toObj(response.body)
+			if (body?.code === 0) {
+				$.log(`- 今日投币经验: ${body.data}`)
+			}else {
+				$.log("- 获取今日投币经验失败: " + body?.message)
+			}
+		} catch (e) {
+			$.logErr(e, response)
+		}
+	})
 }
 
 async function getFavUid() {
