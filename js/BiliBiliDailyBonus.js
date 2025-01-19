@@ -203,6 +203,8 @@ async function signBiliBili() {
 			$.log("---- 将尝试额外任务")
 		} else {
 			$.log("---- 经验值任务均已完成,将尝试额外任务")
+						await coin()
+						$.wait(1000) //减少频繁请求概率
 		}
 		
 		await liveSign()
@@ -446,7 +448,7 @@ async function share(aid, cid, short_link) {
 }
 
 async function coin() {
-	if (config.coins.num >= 50) {
+	if (config.coins.num >= 100) {
 		$.log(`- 今日已完成 ${config.coins.time}`)
 		return
 	}
@@ -481,6 +483,8 @@ async function coin() {
 				body: $.queryStr(body)
 			}
 			$.wait(5000) //减少频繁请求概率
+			$.sleep(5000) //减少频繁请求概率
+			$.log(`- 测试sleep: ${format(new Date().toDateString()}`)
 			await $.fetch(myRequest).then(async response => {
 				try {
 					const body = $.toObj(response.body)
@@ -493,7 +497,7 @@ async function coin() {
 						$.log("- 投币失败,失败原因 " + body.message)
 						config.coins.failures = (config.coins.failures === 0 || typeof config.coins.failures === 'undefined' ? 1 : config.coins.failures + 1)
 						$.setItem($.name + "_daily_bonus", $.toStr(config))
-						if (config.coins.failures < 11) {
+						if (config.coins.failures < 16) {
 							$.log("- 正在重试...重试次数 " + (config.coins.failures - 1) + "(超过十次不再重试)")
 							await coin()
 						}
