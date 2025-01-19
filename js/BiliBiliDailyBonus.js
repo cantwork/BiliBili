@@ -447,6 +447,10 @@ async function share(aid, cid, short_link) {
 	}
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function coin() {
 	if (config.coins.num >= 100) {
 		$.log(`- 今日已完成 ${config.coins.time}`)
@@ -483,7 +487,7 @@ async function coin() {
 				body: $.queryStr(body)
 			}
 			$.wait(5000) //减少频繁请求概率
-			$.sleep(5000) //减少频繁请求概率
+			await sleep(5000); //减少频繁请求概率
 			$.log(`- 测试sleep: ${format(new Date().toDateString())}`)
 			await $.fetch(myRequest).then(async response => {
 				try {
