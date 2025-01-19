@@ -196,7 +196,7 @@ async function signBiliBili() {
 						break
 					} else {
 						await coin()
-						$.wait(5000) //减少频繁请求概率
+						$.wait(1000) //减少频繁请求概率
 					}
 				}
 			}
@@ -450,13 +450,18 @@ async function coin() {
 		$.log(`- 今日已完成 ${config.coins.time}`)
 		return
 	}
-	let like_uid_list = await getFavUid()
-	if (like_uid_list && like_uid_list.length > 0) {
-		let aid = await getFavAid(like_uid_list)
-		$.log("即将投币的视频aid: " + aid)
-		if (aid !== 0) {
+	// let like_uid_list = await getFavUid()
+	// if (like_uid_list && like_uid_list.length > 0) {
+		// let aid = await getFavAid(like_uid_list)
+		// $.log("- 即将投币的视频aid: " + aid)
+		// if (aid !== 0) {
+	let feed_list = await getFeed()
+	if (feed_list && feed_list.length > 0) {
+		let bvid = await getFavAid(feed_list)
+		$.log("- 即将投币的视频bvid: " + bvid)
+		if (bvid) {
 			const body = {
-				aid,
+				bvid,
 				multiply: 1,
 				select_like: 0,
 				cross_domain: true,
@@ -475,6 +480,7 @@ async function coin() {
 				},
 				body: $.queryStr(body)
 			}
+			$.wait(5000) //减少频繁请求概率
 			await $.fetch(myRequest).then(async response => {
 				try {
 					const body = $.toObj(response.body)
@@ -490,7 +496,6 @@ async function coin() {
 						if (config.coins.failures < 11) {
 							$.log("- 正在重试...重试次数 " + (config.coins.failures - 1) + "(超过十次不再重试)")
 							await coin()
-							$.wait(5000) //减少频繁请求概率
 						}
 					}
 				} catch (e) {
@@ -501,8 +506,41 @@ async function coin() {
 			$.log("获取随机投币视频失败")
 		}
 	} else {
-		$.log("获取随机关注用户列表失败")
+		$.log("获取视频列表失败")
 	}
+}
+
+async function getFeed() {
+	const myRequest = {
+		url: `https://api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd`,
+		headers: {
+			'Cookie': jsonToCookieStr(config.cookie)
+		}
+	}
+	return await $.fetch(myRequest).then(response => {
+		try {
+			const body = $.toObj(response.body)
+			let feed_list = new Array()
+			if (body?.code === 0) {
+				$.log("- 获取首页推荐列表成功")
+				feed_list = body?.data?.item
+				return feed_list
+			} else {
+				$.log("- 获取首页推荐列表失败")
+				$.log("- 失败原因 " + body?.message)
+				return feed_list
+			}
+		} catch (e) {
+			$.logErr(e, response)
+		}
+	})
+}
+async function getFeedBvid(arr) {
+	//$.log("- 获取首页列表中的随机视频")
+	let random_int = Math.floor((Math.random()*arr.length))
+	$.log("- 作者: " + arr[random_int]['owner']['name'] + "; 视频标题: " + arr[random_int]['title'])
+	let bvid = arr[random_int]?.bvid
+	return bvid
 }
 
 async function getFavUid() {
