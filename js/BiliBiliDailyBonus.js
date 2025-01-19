@@ -484,7 +484,7 @@ async function coin() {
 			}
 			$.wait(5000) //减少频繁请求概率
 			$.sleep(5000) //减少频繁请求概率
-			$.log(`- 测试sleep: ${format(new Date().toDateString()}`)
+			$.log(`- 测试sleep: ${format(new Date().toDateString())}`)
 			await $.fetch(myRequest).then(async response => {
 				try {
 					const body = $.toObj(response.body)
