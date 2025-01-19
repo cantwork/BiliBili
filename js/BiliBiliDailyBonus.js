@@ -124,6 +124,9 @@ let config = {
 }
 let real_times //实际需要投币次数
 
+let feed_list = [] //首页推荐列表
+let feed_index = 0
+
 !(async () => {
 	if (typeof $request != "undefined") {
 		$.log("- 正在获取cookie, 请稍后")
@@ -195,14 +198,16 @@ async function signBiliBili() {
 						$.log("- 硬币不足,投币失败")
 						break
 					} else {
+						await sleep(1000) //减少频繁请求概率
 						await coin()
-						$.wait(1000) //减少频繁请求概率
 					}
 				}
 			}
 			$.log("---- 将尝试额外任务")
 		} else {
 			$.log("---- 经验值任务均已完成,将尝试额外任务")
+			await sleep(1000) //减少频繁请求概率
+			await coin()
 		}
 		
 		await liveSign()
@@ -450,7 +455,7 @@ function sleep(ms) {
 }
 
 async function coin() {
-	if (config.coins.num >= 50) {
+	if (config.coins.num >= 120) {
 		$.log(`- 今日已完成 ${config.coins.time}`)
 		return
 	}
@@ -459,7 +464,7 @@ async function coin() {
 		// let aid = await getFavAid(like_uid_list)
 		// $.log("- 即将投币的视频aid: " + aid)
 		// if (aid !== 0) {
-	let feed_list = await getFeed()
+	feed_list = feed_list.length == 0 ? await getFeed() : feed_list
 	if (feed_list && feed_list.length > 0) {
 		let bvid = await getFeedBvid(feed_list)
 		$.log("- 即将投币的视频bvid: " + bvid)
@@ -487,16 +492,18 @@ async function coin() {
 			await $.fetch(myRequest).then(async response => {
 				try {
 					const body = $.toObj(response.body)
+					feed_index++
 					if (body?.code === 0 && body?.message === "0") {
 						$.log("- 投币成功")
 						config.user.money -= 1
 						config.coins.num += 10
 						$.setItem($.name + "_daily_bonus", $.toStr(config))
+						await coin()
 					} else {
 						$.log("- 投币失败,失败原因 " + body.message)
 						config.coins.failures = (config.coins.failures === 0 || typeof config.coins.failures === 'undefined' ? 1 : config.coins.failures + 1)
 						$.setItem($.name + "_daily_bonus", $.toStr(config))
-						if (config.coins.failures < 21) {
+						if (config.coins.failures < 31) {
 							$.log("- 正在重试...重试次数 " + (config.coins.failures - 1) + "(超过二十次不再重试)")
 							await coin()
 						}
@@ -523,7 +530,6 @@ async function getFeed() {
 	return await $.fetch(myRequest).then(response => {
 		try {
 			const body = $.toObj(response.body)
-			let feed_list = new Array()
 			if (body?.code === 0) {
 				$.log("- 获取首页推荐列表成功")
 				feed_list = body?.data?.item
@@ -540,9 +546,7 @@ async function getFeed() {
 }
 
 async function getFeedBvid(arr) {
-	//$.log("- 获取首页列表中的随机视频")
-	let random_int = Math.floor((Math.random()*arr.length))
-	let item = arr[random_int]
+	let item = arr[feed_index]
 	$.log("- 作者: " + item['owner']['name'] + "; 视频标题: " + item['title'])
 	await sleep(3000); //减少频繁请求概率
 	$.log('- 正在观看这条视频...')
