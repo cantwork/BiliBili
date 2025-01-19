@@ -457,7 +457,7 @@ async function coin() {
 		// if (aid !== 0) {
 	let feed_list = await getFeed()
 	if (feed_list && feed_list.length > 0) {
-		let bvid = await getFavAid(feed_list)
+		let bvid = await getFeedBvid(feed_list)
 		$.log("- 即将投币的视频bvid: " + bvid)
 		if (bvid) {
 			const body = {
