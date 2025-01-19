@@ -203,6 +203,8 @@ async function signBiliBili() {
 			$.log("---- 将尝试额外任务")
 		} else {
 			$.log("---- 经验值任务均已完成,将尝试额外任务")
+						await coin()
+						$.wait(1000) //减少频繁请求概率
 		}
 		
 		await liveSign()
@@ -450,7 +452,7 @@ function sleep(ms) {
 }
 
 async function coin() {
-	if (config.coins.num >= 50) {
+	if (config.coins.num >= 100) {
 		$.log(`- 今日已完成 ${config.coins.time}`)
 		return
 	}
@@ -484,7 +486,7 @@ async function coin() {
 				},
 				body: $.queryStr(body)
 			}
-			await sleep(10000); //减少频繁请求概率
+			await sleep(8000); //减少频繁请求概率
 			await $.fetch(myRequest).then(async response => {
 				try {
 					const body = $.toObj(response.body)
@@ -497,7 +499,7 @@ async function coin() {
 						$.log("- 投币失败,失败原因 " + body.message)
 						config.coins.failures = (config.coins.failures === 0 || typeof config.coins.failures === 'undefined' ? 1 : config.coins.failures + 1)
 						$.setItem($.name + "_daily_bonus", $.toStr(config))
-						if (config.coins.failures < 21) {
+						if (config.coins.failures < 31) {
 							$.log("- 正在重试...重试次数 " + (config.coins.failures - 1) + "(超过二十次不再重试)")
 							await coin()
 						}
@@ -542,8 +544,12 @@ async function getFeed() {
 async function getFeedBvid(arr) {
 	//$.log("- 获取首页列表中的随机视频")
 	let random_int = Math.floor((Math.random()*arr.length))
-	$.log("- 作者: " + arr[random_int]['owner']['name'] + "; 视频标题: " + arr[random_int]['title'])
-	let bvid = arr[random_int]?.bvid
+	let item = arr[random_int]
+	$.log("- 作者: " + item['owner']['name'] + "; 视频标题: " + item['title'])
+	await sleep(3000); //减少频繁请求概率
+	$.log('- 正在观看这条视频...')
+	await watch(item.id, item.bvid, item.cid)
+	let bvid = item?.bvid
 	return bvid
 }
 
