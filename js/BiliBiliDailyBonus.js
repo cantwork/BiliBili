@@ -208,8 +208,8 @@ async function signBiliBili() {
 			$.log("---- 经验值任务均已完成,将尝试额外任务")
 		}
 		
-		await liveSign()
-		await silver2coin()
+		// await liveSign()
+		// await silver2coin()
 		await vipScoreSign()
 		if (config.user.vipStatus === 1) {
 			await vipExtraEx()
@@ -224,6 +224,7 @@ async function signBiliBili() {
 				if (config.user.vipType === 2) {
 					await vipPrivilege(1)
 					$.wait(800) //延迟执行，防止领劵延迟
+					await sleep(1000)
 					let charge_mid = config.Settings?.charge_mid || config.user.mid  //用户设置充电id
 					let bp_num = config.Settings?.bp_num || 5  //用户设置充电数量
 					await Charge(charge_mid, bp_num)//充电
