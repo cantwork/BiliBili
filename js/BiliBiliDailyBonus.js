@@ -198,7 +198,7 @@ async function signBiliBili() {
 						$.log("- 硬币不足,投币失败")
 						break
 					} else {
-						await sleep(1000) //减少频繁请求概率
+						await sleep(3000) //减少频繁请求概率
 						await coin()
 					}
 				}
@@ -206,8 +206,6 @@ async function signBiliBili() {
 			$.log("---- 将尝试额外任务")
 		} else {
 			$.log("---- 经验值任务均已完成,将尝试额外任务")
-			await sleep(1000) //减少频繁请求概率
-			await coin()
 		}
 		
 		await liveSign()
@@ -455,7 +453,7 @@ function sleep(ms) {
 }
 
 async function coin() {
-	if (config.coins.num >= 120) {
+	if (config.coins.num >= 50) {
 		$.log(`- 今日已完成 ${config.coins.time}`)
 		return
 	}
@@ -498,13 +496,15 @@ async function coin() {
 						config.user.money -= 1
 						config.coins.num += 10
 						$.setItem($.name + "_daily_bonus", $.toStr(config))
-						await coin()
 					} else {
 						$.log("- 投币失败,失败原因 " + body.message)
 						config.coins.failures = (config.coins.failures === 0 || typeof config.coins.failures === 'undefined' ? 1 : config.coins.failures + 1)
 						$.setItem($.name + "_daily_bonus", $.toStr(config))
-						if (config.coins.failures < 31) {
-							$.log("- 正在重试...重试次数 " + (config.coins.failures - 1) + "(超过二十次不再重试)")
+						if (config.coins.failures < 61) {
+							$.log("- 正在重试...重试次数 " + (config.coins.failures - 1) + "(超过六十次不再重试)")
+							if(feed_index >= feed_list.length){ //全特么失败了，重新拉取
+								feed_list = []
+							}
 							await coin()
 						}
 					}
@@ -548,10 +548,10 @@ async function getFeed() {
 async function getFeedBvid(arr) {
 	let item = arr[feed_index]
 	$.log("- 作者: " + item['owner']['name'] + "; 视频标题: " + item['title'])
-	await sleep(3000); //减少频繁请求概率
+	await sleep(5000); //减少频繁请求概率
 	$.log('- 正在观看这条视频...')
 	await watch(item.id, item.bvid, item.cid)
-	await sleep(5000); //减少频繁请求概率
+	await sleep(3000); //减少频繁请求概率
 	let bvid = item?.bvid
 	return bvid
 }
