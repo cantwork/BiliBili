@@ -175,13 +175,22 @@ async function signBiliBili() {
 		}
 		let flag = isFlag(exec_times)
 		if (flag){
-			await dynamic()
-			if (cards.length) {
-				let item = cards[Math.floor(Math.random() * cards.length)]
-				let card = $.toObj(item.card)
-				short_link = encodeURIComponent(card?.short_link_v2.replace(/\\\//g, '/'))
-				await watch(item.desc.rid, item.desc.bvid, card.cid)
-				await share(item.desc.rid, card.cid, short_link)
+			// await dynamic()
+			// if (cards.length) {
+			// 	let item = cards[Math.floor(Math.random() * cards.length)]
+			// 	let card = $.toObj(item.card)
+			// 	short_link = encodeURIComponent(card?.short_link_v2.replace(/\\\//g, '/'))
+			// 	await watch(item.desc.rid, item.desc.bvid, card.cid)
+			// 	await share(item.desc.rid, card.cid, short_link)
+			// } else {
+			// 	$.log("- 获取视频失败，请重试或寻求帮助")
+			// }
+			
+			await getFeed()
+			if (feed_list.length) {
+				let item = feed_list[Math.floor(Math.random() * feed_list.length)]
+				await watch(item.id, item.bvid, item.cid)
+				await share(item.id, item.cid, '')
 			} else {
 				$.log("- 获取视频失败，请重试或寻求帮助")
 			}
@@ -198,7 +207,7 @@ async function signBiliBili() {
 						$.log("- 硬币不足,投币失败")
 						break
 					} else {
-						await sleep(3000) //减少频繁请求概率
+						await sleep(1000) //减少频繁请求概率
 						await coin()
 					}
 				}
@@ -223,8 +232,7 @@ async function signBiliBili() {
 			if (day === '1' || day === '15') {
 				if (config.user.vipType === 2) {
 					await vipPrivilege(1)
-					$.wait(800) //延迟执行，防止领劵延迟
-					await sleep(1000)
+					await sleep(500) //延迟执行，防止领劵延迟
 					let charge_mid = config.Settings?.charge_mid || config.user.mid  //用户设置充电id
 					let bp_num = config.Settings?.bp_num || 5  //用户设置充电数量
 					await Charge(charge_mid, bp_num)//充电
@@ -501,8 +509,8 @@ async function coin() {
 						$.log("- 投币失败,失败原因 " + body.message)
 						config.coins.failures = (config.coins.failures === 0 || typeof config.coins.failures === 'undefined' ? 1 : config.coins.failures + 1)
 						$.setItem($.name + "_daily_bonus", $.toStr(config))
-						if (config.coins.failures < 61) {
-							$.log("- 正在重试...重试次数 " + (config.coins.failures - 1) + "(超过六十次不再重试)")
+						if (config.coins.failures < 51) {
+							$.log("- 正在重试...重试次数 " + (config.coins.failures - 1) + "(超过五十次不再重试)")
 							if(feed_index >= feed_list.length){ //全特么失败了，重新拉取
 								feed_list = []
 							}
@@ -534,6 +542,8 @@ async function getFeed() {
 			if (body?.code === 0) {
 				$.log("- 获取首页推荐列表成功")
 				feed_list = body?.data?.item
+				const { user, watch, share } = config
+				user.time = watch.time = share.time = startTime
 				return feed_list
 			} else {
 				$.log("- 获取首页推荐列表失败")
@@ -1165,30 +1175,30 @@ async function queryStatus() {
 	})
 }
 
-async function dynamic() {
-	$.log("#### 获取首页视频")
-	const myRequest = {
-		url: `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=${config.cookie.DedeUserID}&type_list=8&from=&platform=web`,
-		headers: {
-			"cookie": config.cookieStr
-		}
-	}
-	await $.fetch(myRequest).then(response => {
-		try {
-			const body = $.toObj(response.body)
-			if (body?.data?.cards) {
-				cards = body.data.cards
-				const { user, watch, share } = config
-				user.time = watch.time = share.time = startTime
-				$.log("- 获取视频动态成功")
-			} else {
-				$.log("- 获取视频动态失败")
-			}
-		} catch (e) {
-			$.logErr(e, response)
-		}
-	})
-}
+// async function dynamic() {
+// 	$.log("#### 获取首页视频")
+// 	const myRequest = {
+// 		url: `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=${config.cookie.DedeUserID}&type_list=8&from=&platform=web`,
+// 		headers: {
+// 			"cookie": config.cookieStr
+// 		}
+// 	}
+// 	await $.fetch(myRequest).then(response => {
+// 		try {
+// 			const body = $.toObj(response.body)
+// 			if (body?.data?.cards) {
+// 				cards = body.data.cards
+// 				const { user, watch, share } = config
+// 				user.time = watch.time = share.time = startTime
+// 				$.log("- 获取视频动态成功")
+// 			} else {
+// 				$.log("- 获取视频动态失败")
+// 			}
+// 		} catch (e) {
+// 			$.logErr(e, response)
+// 		}
+// 	})
+// }
 
 // Wbi签名获取
 function getWbiSigns(r){function t(r){let t="";return e.forEach(s=>{t+=r[s]}),t.slice(0,32)}function s(r,s,u){const e=t(s+u),i=parseInt($.startTime/1e3);let n="";r=Object.assign(r,{wts:i}),n=$.queryStr(Object.fromEntries(new Map(Array.from(Object.entries(r)).sort())));const l=md5(n+e);return n+"&w_rid="+l}function u(){return img_url=config.user.wbi_img.img_url,sub_url=config.user.wbi_img.sub_url,{img_key:img_url.substring(img_url.lastIndexOf("/")+1,img_url.length).split(".")[0],sub_key:sub_url.substring(sub_url.lastIndexOf("/")+1,sub_url.length).split(".")[0]}}const e=[46,47,18,2,53,8,23,32,15,50,10,31,58,3,45,35,27,43,5,49,33,9,42,19,29,28,14,39,12,38,41,13,37,48,7,16,24,55,40,61,26,17,0,1,60,51,30,4,22,25,54,21,56,59,6,63,57,62,11,36,20,34,44,52],i=u();return s(r,i.img_key,i.sub_key)}
