@@ -562,8 +562,8 @@ async function getFeedBvid(arr) {
 	$.log('- 正在观看这条视频...')
 	await watch(item.id, item.bvid, item.cid)
 	await sleep(2000);
-	await todayExp()
-	await sleep(1000);
+	// await todayExp()
+	// await sleep(1000);
 	let bvid = item?.bvid
 	return bvid
 }
