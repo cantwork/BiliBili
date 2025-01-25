@@ -189,7 +189,7 @@ async function signBiliBili() {
 			await getFeed()
 			if (feed_list.length) {
 				let item = feed_list[Math.floor(Math.random() * feed_list.length)]
-				await watch(item.id, item.bvid, item.cid)
+				await watch(item.id, item.bvid, item.cid, 1)
 				await share(item.id, item.cid, '')
 			} else {
 				$.log("- 获取视频失败，请重试或寻求帮助")
@@ -359,51 +359,51 @@ async function getAccessKey(auth_code) {
 	})
 }
 
-async function watch(aid, bvid, cid) {
-	$.log("1️⃣ 观看(登录)任务")
-	if (check("watch")) {
-		$.log(`- 正在观看(登录)(${bvid})`)
-		const body = {
-			aid,
-			cid,
-			bvid,
-			mid: config.user.mid,
-			csrf: config.cookie.bili_jct,
-			played_time : 1,
-			real_played_time: 1,
-			realtime: 1,
-			start_ts: $.getTimestamp(),
-			type: 3,
-			dt: 2,
-			play_type: 0,
-			from_spmid: 0,
-			spmid: 0,
-			auto_continued_play: 0,
-			refer_url: "https%3A%2F%2Ft.bilibili.com%2F",
-			bsource: ""
-		}
-		const myRequest = {
-			url: 'https://api.bilibili.com/x/click-interface/web/heartbeat',
-			headers: {
-				"cookie": config.cookieStr,
-				"referrer": `https://www.bilibili.com/video/${bvid}`
-			},
-			body: $.queryStr(body)
-		}
-		await $.fetch(myRequest).then(response => {
-			const body = $.toObj(response.body)
-			if (body?.code === 0) {
-				$.log(`- 累计观看(登录)次数 ${(config.watch.num || 0) + 1}`)
-				config.user.num = (config.user.num || 0) + 1
-				config.watch.num = (config.watch.num || 0) + 1
-				$.setItem($.name + "_daily_bonus", $.toStr(config))
-			} else {
-				$.log("- 观看失败, 失败原因: " + body?.message)
-			}
-		})
-	} else {
-		$.log(`- 今日已经观看 ${config.watch.time}`)
+async function watch(aid, bvid, cid, firstFlag) {
+	if(firstFlag){
+		$.log("1️⃣ 观看(登录)任务")
 	}
+	$.log(`- 正在观看(${bvid})`)
+	const body = {
+		aid,
+		cid,
+		bvid,
+		mid: config.user.mid,
+		csrf: config.cookie.bili_jct,
+		played_time : 1,
+		real_played_time: 1,
+		realtime: 1,
+		start_ts: $.getTimestamp(),
+		type: 3,
+		dt: 2,
+		play_type: 0,
+		from_spmid: 0,
+		spmid: 0,
+		auto_continued_play: 0,
+		refer_url: "https%3A%2F%2Ft.bilibili.com%2F",
+		bsource: ""
+	}
+	const myRequest = {
+		url: 'https://api.bilibili.com/x/click-interface/web/heartbeat',
+		headers: {
+			"cookie": config.cookieStr,
+			"referrer": `https://www.bilibili.com/video/${bvid}`
+		},
+		body: $.queryStr(body)
+	}
+	await $.fetch(myRequest).then(response => {
+		const body = $.toObj(response.body)
+		if (body?.code === 0) {
+			config.watch.time = format(new Date().toDateString())
+			$.log(`- 本次观看时间 ${config.watch.time}`)
+			// $.log(`- 累计观看次数 ${(config.watch.num || 0) + 1}`)
+			config.user.num = (config.user.num || 0) + 1
+			config.watch.num = (config.watch.num || 0) + 1
+			$.setItem($.name + "_daily_bonus", $.toStr(config))
+		} else {
+			$.log("- 观看失败, 失败原因: " + body?.message)
+		}
+	})
 }
 
 async function share(aid, cid, short_link) {
@@ -462,7 +462,7 @@ function sleep(ms) {
 
 async function coin() {
 	if (config.coins.num >= 50) {
-		$.log(`- 今日已完成 ${config.coins.time}`)
+		$.log(`- 今日投币已完成 ${config.coins.time}`)
 		return
 	}
 	// let like_uid_list = await getFavUid()
@@ -473,7 +473,7 @@ async function coin() {
 	feed_list = feed_list.length == 0 ? await getFeed() : feed_list
 	if (feed_list && feed_list.length > 0) {
 		let bvid = await getFeedBvid(feed_list)
-		$.log("- 即将投币的视频bvid: " + bvid)
+		$.log("- 正在投币: " + bvid)
 		if (bvid) {
 			const body = {
 				bvid,
@@ -503,6 +503,7 @@ async function coin() {
 						$.log("- 投币成功")
 						config.user.money -= 1
 						config.coins.num += 10
+						config.coins.time = format(new Date().toDateString())
 						$.setItem($.name + "_daily_bonus", $.toStr(config))
 					} else {
 						$.log("- 投币失败,失败原因 " + body.message)
@@ -547,7 +548,7 @@ async function getFeed() {
 			} else {
 				$.log("- 获取首页推荐列表失败")
 				$.log("- 失败原因 " + body?.message)
-				return feed_list
+				return []
 			}
 		} catch (e) {
 			$.logErr(e, response)
@@ -558,12 +559,10 @@ async function getFeed() {
 async function getFeedBvid(arr) {
 	let item = arr[feed_index]
 	$.log("- 作者: " + item['owner']['name'] + "; 视频标题: " + item['title'])
-	await sleep(2000); //减少频繁请求概率
-	$.log('- 正在观看这条视频...')
-	await watch(item.id, item.bvid, item.cid)
-	await sleep(2000);
+	await sleep(1000); //减少频繁请求概率
+	await watch(item.id, item.bvid, item.cid, 0)
+	await sleep(500);
 	// await todayExp()
-	// await sleep(1000);
 	let bvid = item?.bvid
 	return bvid
 }
