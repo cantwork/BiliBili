@@ -518,8 +518,13 @@ async function coin() {
 						}
 					}
 				} catch (e) {
+					$.log("- 投币失败")
 					$.logErr(e, response)
+					await coin()
 				}
+			},async reason => {
+				$.log("- 投币失败 " + $.toStr(reason))
+				await coin()
 			})
 		} else {
 			$.log("获取随机投币视频失败")
@@ -835,7 +840,9 @@ async function vipScoreFan() {
 	const myRequest = {
 		url: `https://api.bilibili.com/pgc/activity/deliver/task/complete?access_key=${config.key}&position=jp_channel&sign=768d600feba34e6d1109e4157c0f0c5f&task_sign=557D1ACE13E9E81393259FFB621D6D0E`,
 		method: "POST",
-		headers: {}
+		headers: {
+			'Cookie': config.cookieStr
+		},
 	}
 	await $.fetch(myRequest).then(response => {
 		try {
@@ -857,7 +864,9 @@ async function vipScoreMovie() {
 	const myRequest = {
 		url: `https://api.bilibili.com/pgc/activity/deliver/task/complete?access_key=${config.key}&position=tv_channel&sign=09ece1c295cb86d74778b93c59c0da3a&task_sign=B7DA5FAE25C39F53C62C03076CF2878B`,
 		method: "POST",
-		headers: {}
+		headers: {
+			'Cookie': config.cookieStr
+		},
 	}
 	await $.fetch(myRequest).then(response => {
 		try {
@@ -884,7 +893,9 @@ async function vipScoreDress() {
 	}
 	const myRequest = {
 		url: 'https://api.bilibili.com/pgc/activity/score/task/complete/v2',
-		headers: {},
+		headers: {
+			'Cookie': config.cookieStr
+		},
 		body: $.queryStr(body)
 	}
 	await $.fetch(myRequest).then(response => {
