@@ -527,7 +527,7 @@ async function coin() {
 					await coin()
 				}
 			},async reason => {
-				$.log("- 投币失败 " + $.toStr(reason))
+				$.log("- 投币接口失败 " + $.toStr(reason))
 				await coin()
 			})
 		} else {
