@@ -403,6 +403,8 @@ async function watch(aid, bvid, cid, firstFlag) {
 		} else {
 			$.log("- 观看失败, 失败原因: " + body?.message)
 		}
+	}, reason => {
+		$.logErr('- 观看接口失败： ' + reason)
 	})
 }
 
@@ -450,6 +452,8 @@ async function share(aid, cid, short_link) {
 			} else {
 				$.log("- 分享失败, 失败原因: " + body?.message)
 			}
+		}, reason => {
+			$.logErr('- 分享接口失败： ' + reason)
 		})
 	} else {
 		$.log(`- 今日已经分享 ${config.share.time}`)
@@ -558,6 +562,9 @@ async function getFeed() {
 		} catch (e) {
 			$.logErr(e, response)
 		}
+	}, reason => {
+		$.logErr('- 首页推荐接口失败： ' + reason)
+		return []
 	})
 }
 
