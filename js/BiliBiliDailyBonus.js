@@ -572,9 +572,9 @@ async function getFeed() {
 async function getFeedBvid(arr) {
 	let item = arr[feed_index]
 	$.log("- 作者: " + item['owner']['name'] + "; 视频标题: " + item['title'])
-	await sleep(1000); //减少频繁请求概率
-	await watch(item.id, item.bvid, item.cid, 0)
-	await sleep(500);
+	await sleep(2000); //减少频繁请求概率
+	//await watch(item.id, item.bvid, item.cid, 0)
+	//await sleep(500);
 	// await todayExp()
 	let bvid = item?.bvid
 	return bvid
