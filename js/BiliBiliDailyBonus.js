@@ -513,9 +513,9 @@ async function coin() {
 						$.log("- 投币失败,失败原因 " + body.message)
 						config.coins.failures = (config.coins.failures === 0 || typeof config.coins.failures === 'undefined' ? 1 : config.coins.failures + 1)
 						$.setItem($.name + "_daily_bonus", $.toStr(config))
-						if (config.coins.failures < 31) {
+						if (config.coins.failures < 45) {
 							$.log("- 正在重试...重试次数 " + (config.coins.failures - 1) + "(超过三十次不再重试)")
-							if(feed_index >= feed_list.length/3){ //全特么失败了，重新拉取
+							if(feed_index >= feed_list.length/2){ //全特么失败了，重新拉取
 								feed_list = []
 								feed_index = 0
 							}
@@ -572,7 +572,7 @@ async function getFeed() {
 async function getFeedBvid(arr) {
 	let item = arr[feed_index]
 	$.log("- 作者: " + item['owner']['name'] + "; 视频标题: " + item['title'])
-	await sleep(2000); //减少频繁请求概率
+	await sleep(1500); //减少频繁请求概率
 	//await watch(item.id, item.bvid, item.cid, 0)
 	//await sleep(500);
 	// await todayExp()
