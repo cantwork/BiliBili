@@ -502,7 +502,7 @@ async function coin() {
 			await $.fetch(myRequest).then(async response => {
 				try {
 					const body = $.toObj(response.body)
-					feed_index++
+					feed_index+=2
 					if (body?.code === 0 && body?.message === "0") {
 						$.log("- 投币成功")
 						config.user.money -= 1
