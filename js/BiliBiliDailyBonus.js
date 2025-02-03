@@ -515,7 +515,7 @@ async function coin() {
 						$.setItem($.name + "_daily_bonus", $.toStr(config))
 						if (config.coins.failures < 31) {
 							$.log("- 正在重试...重试次数 " + (config.coins.failures - 1) + "(超过三十次不再重试)")
-							if(feed_index >= feed_list.length/3){ //全特么失败了，重新拉取
+							if(feed_index >= feed_list.length - 1){ //全特么失败了，重新拉取
 								feed_list = []
 								feed_index = 0
 							}
