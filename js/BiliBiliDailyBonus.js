@@ -1,7 +1,7 @@
 /*
-哔哩哔哩每日任务(V1.1)
+哔哩哔哩每日任务(V1.2)
 
-更新时间: 2024-04-06
+更新时间: 2025-01-31
 脚本兼容: QuantumultX, Surge, Loon
 脚本作者: MartinsKing（@ClydeTime）
 软件功能: 登录/观看/分享/投币/直播签到/银瓜子转硬币/大会员积分签到/年度大会员每月B币券+等任务
@@ -480,29 +480,27 @@ async function coin() {
 		$.log("- 正在投币: " + bvid)
 		if (bvid) {
 			const body = {
+				access_key: config.key,
 				bvid,
 				multiply: 1,
 				select_like: 0,
-				cross_domain: true,
-				csrf: config.cookie.bili_jct
 			}
 			const myRequest = {
-				url: "https://api.bilibili.com/x/web-interface/coin/add",
+				url: "https://app.bilibili.com/x/v2/view/coin/add",
 				method: 'POST',
 				headers: {
-					'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36',
-					'Accept': 'application/json, text/plain, */*',
+					'user-agent': 'bili-universal/83100100 CFNetwork/1.0 Darwin/24.3.0 os/ios model/iPhone 16 Pro Max mobi_app/iphone build/83100100 osVer/18.3 network/2 channel/AppStore',
+					'accept-encoding': 'gzip, deflate, br',
 					'Content-Type': 'application/x-www-form-urlencoded',
-					'Referer': 'https://www.bilibili.com/',
-					'Origin': 'https://www.bilibili.com',
-					'Cookie': jsonToCookieStr(config.cookie)
+					'app-key': 'iphone',
+					'cookie': config.cookieStr
 				},
 				body: $.queryStr(body)
 			}
 			await $.fetch(myRequest).then(async response => {
 				try {
 					const body = $.toObj(response.body)
-					feed_index+=2
+					feed_index+=3
 					if (body?.code === 0 && body?.message === "0") {
 						$.log("- 投币成功")
 						config.user.money -= 1
@@ -751,13 +749,25 @@ async function vipScoreSign() {
 		$.log("- 当前用户非大会员, 无法完成任务")
 	} else {
 		if (check("score")) {
+			const body = {
+				csrf: config.cookie.bili_jct,
+				ts: $.getTimestamp(),
+				buvid: config.cookie.Buvid,
+				mobi_app: 'iphone',
+				platform: 'ios',
+				appkey: '27eb53fc9058f8c3',
+				access_key: config.key
+			}
 			const myRequest = {
 				url: "https://api.bilibili.com/pgc/activity/score/task/sign",
 				method: "POST",
 				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
 					'Referer': 'https://big.bilibili.com/mobile/bigPoint/task',
-					'cookie': config.cookieStr
-				}
+					'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/615.2.9.10.4 (KHTML, like Gecko) Mobile/20F75 BiliApp/77200100 os/ios model/iPhone 15 Pro Max mobi_app/iphone build/77200100 osVer/17.4.1 network/2 channel/AppStore c_locale/zh-Hans_CN s_locale/zh-Hans_CN disable_rcmd/0',
+					'Cookie': `SESSDATA=${config.cookie.SESSDATA}`,
+				},
+				body: $.queryStr(body)
 			}
 			await $.fetch(myRequest).then(response => {
 				try {
@@ -846,11 +856,9 @@ async function vipScoreGo() {
 async function vipScoreFan() {
 	$.log("#### 大会员浏览追番频道10s任务")
 	const myRequest = {
-		url: `https://api.bilibili.com/pgc/activity/deliver/task/complete?access_key=${config.key}&position=jp_channel&sign=768d600feba34e6d1109e4157c0f0c5f&task_sign=557D1ACE13E9E81393259FFB621D6D0E`,
+		url: `https://api.bilibili.com/pgc/activity/deliver/task/complete?access_key=${config.key}&appkey=27eb53fc9058f8c3&position=jp_channel&statistics=%7B%22appId%22%3A1%2C%22version%22%3A%228.31.0%22%2C%22abtest%22%3A%22%22%2C%22platform%22%3A1%7D`,
 		method: "POST",
-		headers: {
-			'Cookie': config.cookieStr
-		},
+		headers: {},
 	}
 	await $.fetch(myRequest).then(response => {
 		try {
@@ -870,11 +878,9 @@ async function vipScoreFan() {
 async function vipScoreMovie() {
 	$.log("#### 大会员浏览影视频道10s任务")
 	const myRequest = {
-		url: `https://api.bilibili.com/pgc/activity/deliver/task/complete?access_key=${config.key}&position=tv_channel&sign=09ece1c295cb86d74778b93c59c0da3a&task_sign=B7DA5FAE25C39F53C62C03076CF2878B`,
+		url: `https://api.bilibili.com/pgc/activity/deliver/task/complete?access_key=${config.key}&appkey=27eb53fc9058f8c3&position=tv_channel&statistics=%7B%22appId%22%3A1%2C%22version%22%3A%228.31.0%22%2C%22abtest%22%3A%22%22%2C%22platform%22%3A1%7D`,
 		method: "POST",
-		headers: {
-			'Cookie': config.cookieStr
-		},
+		headers: {},
 	}
 	await $.fetch(myRequest).then(response => {
 		try {
@@ -897,13 +903,13 @@ async function vipScoreDress() {
 		csrf: config.cookie.bili_jct,
 		ts: $.getTimestamp(),
 		taskCode: 'dress-view',
+		statistics: '%7B%22appId%22%3A1%2C%22version%22%3A%228.31.0%22%2C%22abtest%22%3A%22%22%2C%22platform%22%3A1%7D',
+		appkey: '27eb53fc9058f8c3',		
 		access_key: config.key
 	}
 	const myRequest = {
 		url: 'https://api.bilibili.com/pgc/activity/score/task/complete/v2',
-		headers: {
-			'Cookie': config.cookieStr
-		},
+		headers: {},
 		body: $.queryStr(body)
 	}
 	await $.fetch(myRequest).then(response => {
@@ -938,7 +944,7 @@ async function vipWatchAccept() {
 		url: 'https://api.bilibili.com/pgc/activity/score/task/receive/v2',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
-			'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/615.2.9.10.4 (KHTML, like Gecko) Mobile/20F75 BiliApp/77200100 os/ios model/iPhone 15 Pro Max mobi_app/iphone build/77200100 osVer/17.4.1 network/2 channel/AppStore c_locale/zh-Hans_CN s_locale/zh-Hans_CN disable_rcmd/0',
+			'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_3 like Mac OS X) AppleWebKit/615.2.9.10.4 (KHTML, like Gecko) Mobile/22D63 BiliApp/83100100 os/ios model/iPhone 16 Pro Max mobi_app/iphone build/83100100 osVer/18.3 network/2 channel/AppStore c_locale/zh-Hans_CN s_locale/zh-Hans_CN disable_rcmd/0',
 			'Cookie': `SESSDATA=${config.cookie.SESSDATA}`,
 			'Referer': `https://big.bilibili.com/mobile/bigPoint/task`
 		},
