@@ -495,7 +495,7 @@ async function coin() {
 			await $.fetch(myRequest).then(async response => {
 				try {
 					const body = $.toObj(response.body)
-					feed_index+=3
+					feed_index+=2
 					if (body?.code === 0 && body?.message === "0") {
 						$.log("- 投币成功")
 						config.user.money -= 1
@@ -564,6 +564,10 @@ async function getFeed() {
 
 async function getFeedId(arr) {
 	let item = arr[feed_index]
+	if(item.room_info){ //过滤推荐的直播间
+		feed_index++
+		item = arr[feed_index]
+	}
 	$.log("- 作者: " + item['owner']['name'] + "; 视频标题: " + item['title'])
 	await sleep(1200); //减少频繁请求概率
 	return item?.id
@@ -743,7 +747,10 @@ async function vipScoreSign() {
 			const myRequest = {
 				url: `https://api.bilibili.com/pgc/activity/score/task/sign?access_key=${config.key}&appkey=27eb53fc9058f8c3&statistics=%7B%22appId%22%3A1%2C%22version%22%3A%228.31.0%22%2C%22abtest%22%3A%22%22%2C%22platform%22%3A1%7D`,
 				method: "POST",
-				headers: {}
+				headers:  {
+					'Referer': 'https://big.bilibili.com/mobile/bigPoint/task',
+					'cookie': config.cookieStr
+				}
 			}
 			await $.fetch(myRequest).then(response => {
 				try {
