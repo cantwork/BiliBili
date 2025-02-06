@@ -10,7 +10,7 @@
 
 [Script]
 # BiliBili每日等级任务
-cron "17 8 * * *" script-path=https://raw.githubusercontent.com/cantwork/BiliBili/main/js/BiliBiliDailyBonus.js, tag=B站每日等级任务
+cron "9 8 * * *" script-path=https://raw.githubusercontent.com/cantwork/BiliBili/main/js/BiliBiliDailyBonus.js, tag=B站每日等级任务
 
 http-request ^https?:\/\/app\.bilibili\.com\/x\/resource\/fingerprint\? script-path=https://raw.githubusercontent.com/cantwork/BiliBili/main/js/BiliBiliDailyBonus.js, tag=B站Cookie(APP)
 
