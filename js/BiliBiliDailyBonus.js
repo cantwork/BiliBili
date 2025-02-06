@@ -741,14 +741,9 @@ async function vipScoreSign() {
 	} else {
 		if (check("score")) {
 			const myRequest = {
-				url: `https://api.bilibili.com/pgc/activity/score/task/sign?access_key=${config.key}`,
+				url: `https://api.bilibili.com/pgc/activity/score/task/sign?access_key=${config.key}&appkey=27eb53fc9058f8c3&statistics=%7B%22appId%22%3A1%2C%22version%22%3A%228.31.0%22%2C%22abtest%22%3A%22%22%2C%22platform%22%3A1%7D`,
 				method: "POST",
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-					'Referer': 'https://big.bilibili.com/mobile/bigPoint/task',
-					'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/615.2.9.10.4 (KHTML, like Gecko) Mobile/20F75 BiliApp/77200100 os/ios model/iPhone 15 Pro Max mobi_app/iphone build/77200100 osVer/17.4.1 network/2 channel/AppStore c_locale/zh-Hans_CN s_locale/zh-Hans_CN disable_rcmd/0',
-					'Cookie': config.cookieStr
-				}
+				headers: {}
 			}
 			await $.fetch(myRequest).then(response => {
 				try {
