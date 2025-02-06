@@ -469,19 +469,14 @@ async function coin() {
 		$.log(`- 今日投币已完成 ${config.coins.time}`)
 		return
 	}
-	// let like_uid_list = await getFavUid()
-	// if (like_uid_list && like_uid_list.length > 0) {
-		// let aid = await getFavAid(like_uid_list)
-		// $.log("- 即将投币的视频aid: " + aid)
-		// if (aid !== 0) {
 	feed_list = feed_list.length == 0 ? await getFeed() : feed_list
 	if (feed_list && feed_list.length > 0) {
-		let bvid = await getFeedBvid(feed_list)
-		$.log("- 正在投币: " + bvid)
-		if (bvid) {
+		let aid = await getFeedId(feed_list)
+		$.log("- 正在投币aid: " + aid)
+		if (aid !== 0) {
 			const body = {
 				access_key: config.key,
-				bvid,
+				aid,
 				multiply: 1,
 				select_like: 0,
 			}
@@ -567,15 +562,11 @@ async function getFeed() {
 	})
 }
 
-async function getFeedBvid(arr) {
+async function getFeedId(arr) {
 	let item = arr[feed_index]
 	$.log("- 作者: " + item['owner']['name'] + "; 视频标题: " + item['title'])
 	await sleep(1200); //减少频繁请求概率
-	//await watch(item.id, item.bvid, item.cid, 0)
-	//await sleep(500);
-	// await todayExp()
-	let bvid = item?.bvid
-	return bvid
+	return item?.id
 }
 
 async function todayExp() {
@@ -749,25 +740,15 @@ async function vipScoreSign() {
 		$.log("- 当前用户非大会员, 无法完成任务")
 	} else {
 		if (check("score")) {
-			const body = {
-				csrf: config.cookie.bili_jct,
-				ts: $.getTimestamp(),
-				buvid: config.cookie.Buvid,
-				mobi_app: 'iphone',
-				platform: 'ios',
-				appkey: '27eb53fc9058f8c3',
-				access_key: config.key
-			}
 			const myRequest = {
-				url: "https://api.bilibili.com/pgc/activity/score/task/sign",
+				url: `https://api.bilibili.com/pgc/activity/score/task/sign?access_key=${config.key}`,
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'Referer': 'https://big.bilibili.com/mobile/bigPoint/task',
 					'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/615.2.9.10.4 (KHTML, like Gecko) Mobile/20F75 BiliApp/77200100 os/ios model/iPhone 15 Pro Max mobi_app/iphone build/77200100 osVer/17.4.1 network/2 channel/AppStore c_locale/zh-Hans_CN s_locale/zh-Hans_CN disable_rcmd/0',
-					'Cookie': `SESSDATA=${config.cookie.SESSDATA}`,
-				},
-				body: $.queryStr(body)
+					'Cookie': config.cookieStr
+				}
 			}
 			await $.fetch(myRequest).then(response => {
 				try {
