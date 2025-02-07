@@ -744,13 +744,21 @@ async function vipScoreSign() {
 		$.log("- 当前用户非大会员, 无法完成任务")
 	} else {
 		if (check("score")) {
+			const body = {
+				csrf: config.cookie.bili_jct,
+				ts: $.getTimestamp(),
+				statistics: '%7B%22appId%22%3A1%2C%22version%22%3A%228.31.0%22%2C%22abtest%22%3A%22%22%2C%22platform%22%3A1%7D',
+				appkey: '27eb53fc9058f8c3',		
+				access_key: config.key
+			}
 			const myRequest = {
-				url: `https://api.bilibili.com/pgc/activity/score/task/sign?access_key=${config.key}&appkey=27eb53fc9058f8c3&statistics=%7B%22appId%22%3A1%2C%22version%22%3A%228.31.0%22%2C%22abtest%22%3A%22%22%2C%22platform%22%3A1%7D`,
+				url: `https://api.bilibili.com/pgc/activity/score/task/sign`,
 				method: "POST",
 				headers:  {
 					'Referer': 'https://big.bilibili.com/mobile/bigPoint/task',
-					'cookie': config.cookieStr
-				}
+					'Cookie': `SESSDATA=${config.cookie.SESSDATA}`,
+				},
+				body: $.queryStr(body)
 			}
 			await $.fetch(myRequest).then(response => {
 				try {
