@@ -767,6 +767,8 @@ async function vipScoreSign() {
 				} catch (e) {
 					$.logErr(e, response)
 				}
+			},async reason => {
+				$.log("- 大会员大积分签到任务接口失败 " + $.toStr(reason))
 			})
 		} else {
 			$.log("- 今日已完成")
@@ -808,6 +810,8 @@ async function vipExtraEx() {
 		} catch (e) {
 			$.logErr(e, response)
 		}
+	},async reason => {
+		$.log("- 大会员每日额外经验值接口失败 " + $.toStr(reason))
 	})
 }
 
@@ -833,6 +837,8 @@ async function vipScoreGo() {
 		} catch (e) {
 			$.logErr(e, response)
 		}
+	},async reason => {
+		$.log("- 浏览会员购接口失败 " + $.toStr(reason))
 	})
 }
 
@@ -855,6 +861,8 @@ async function vipScoreFan() {
 		} catch (e) {
 			$.logErr(e, response)
 		}
+	},async reason => {
+		$.log("- 浏览追番接口失败 " + $.toStr(reason))
 	})
 }
 
@@ -877,6 +885,8 @@ async function vipScoreMovie() {
 		} catch (e) {
 			$.logErr(e, response)
 		}
+	},async reason => {
+		$.log("- 浏览影视接口失败 " + $.toStr(reason))
 	})
 }
 
@@ -906,6 +916,8 @@ async function vipScoreDress() {
 		} catch (e) {
 			$.logErr(e, response)
 		}
+	},async reason => {
+		$.log("- 浏览装扮接口失败 " + $.toStr(reason))
 	})
 }
 
@@ -945,6 +957,8 @@ async function vipWatchAccept() {
 		} catch (e) {
 			$.logErr(e, response)
 		}
+	},async reason => {
+		$.log("- 大会员观看剧集任务接口失败 " + $.toStr(reason))
 	})
 }
 
@@ -1002,6 +1016,8 @@ async function vipPrivilege(type) {
 		} catch (e) {
 			$.logErr(e, response)
 		}
+	},async reason => {
+		$.log("- 领取大会员月度福利接口失败 " + $.toStr(reason))
 	})
 }
 
@@ -1045,6 +1061,8 @@ async function Charge(mid, bp_num) {
 		} catch (e) {
 			$.logErr(e, response)
 		}
+	},async reason => {
+		$.log("- B币券自动充电接口失败 " + $.toStr(reason))
 	})
 }
 
