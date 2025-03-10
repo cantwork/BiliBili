@@ -218,7 +218,7 @@ async function signBiliBili() {
 		
 		// await liveSign()
 		// await silver2coin()
-		await vipScoreSign()
+		// await vipScoreSign()
 		if (config.user.vipStatus === 1) {
 			await vipExtraEx()
 			await vipScoreGo()
