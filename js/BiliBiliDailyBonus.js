@@ -465,6 +465,8 @@ function sleep(ms) {
 }
 
 async function coin() {
+	$.log(`- 已经满级，不投币了~`)
+	return	
 	if (config.coins.num >= 50) {
 		$.log(`- 今日投币已完成 ${config.coins.time}`)
 		return
