@@ -207,7 +207,7 @@ async function signBiliBili() {
 						$.log("- 硬币不足,投币失败")
 						break
 					} else {
-						await coin()
+						// await coin()
 					}
 				}
 			}
