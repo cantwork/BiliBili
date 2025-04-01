@@ -174,6 +174,7 @@ async function signBiliBili() {
 			real_times = Math.max(0, exec_times - (Number(config.coins.num) / 10))
 		}
 		let flag = isFlag(exec_times)
+		flag = false
 		if (flag){
 			// await dynamic()
 			// if (cards.length) {
@@ -252,7 +253,8 @@ async function signBiliBili() {
 
 		notice = {
 			title: `${$.name} [${config.user.uname}]`,
-			subTitle: `${flag ? "✅任务完成" : "❗️有未完成的任务"}`,
+			// subTitle: `${flag ? "✅任务完成" : "❗️有未完成的任务"}`,
+			subTitle: `✅任务完成`,
 			content:
 				`任务:登录(观看)${check("watch") ? "" : "+10exp"} 分享${check("share") ? "" : "+5exp"} 投币${check("coins") ? "" : "+50exp"}\n` +
 				`经验:当前${config.user.level_info.current_exp}/下级${config.user.level_info.next_exp}/满级28800\n` +
