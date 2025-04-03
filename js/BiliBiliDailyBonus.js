@@ -260,7 +260,7 @@ async function signBiliBili() {
 				`经验:当前${config.user.level_info.current_exp}/下级${config.user.level_info.next_exp}/满级28800\n` +
 				`等级:当前${config.user.level_info.current_level}级 升满级最快需${Math.ceil((config.user.v6_exp)/65)}天`,
 		}
-		$.msg(notice.title, notice.subTitle, notice.content)
+		// $.msg(notice.title, notice.subTitle, notice.content)
 	} else {
 		$.msg(`${$.name} 任务失败`,`📅 ${startTime}`, "🤒请更新cookie")
 	}
