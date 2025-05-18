@@ -163,7 +163,7 @@ async function signBiliBili() {
 				let item = cards[Math.floor(Math.random() * cards.length)]
 				let card = $.toObj(item.card)
 				short_link = encodeURIComponent(card?.short_link_v2.replace(/\\\//g, '/'))
-				await watch(item.desc.rid, item.desc.bvid, card.cid)
+				//await watch(item.desc.rid, item.desc.bvid, card.cid)
 				await share(item.desc.rid, card.cid, short_link)
 			} else {
 				$.log("- 获取视频失败,请重试或寻求帮助")
@@ -174,7 +174,7 @@ async function signBiliBili() {
 			if (real_times === 0){
 				$.log(`- 今日已完成 记录于${config.coins.time}`)
 			} else {
-				for (let i = 0; i < real_times && (Math.floor(config.user.money) > 5 || ($.log("- 硬币不足,投币失败"), false)); i++) await coin()
+				//for (let i = 0; i < real_times && (Math.floor(config.user.money) > 5 || ($.log("- 硬币不足,投币失败"), false)); i++) await coin()
 			}
 			$.log("---- 经验值任务已完成")
 		} else {
@@ -182,7 +182,7 @@ async function signBiliBili() {
 		}
 		
 		//await liveSign() //已下线
-		await silver2coin()
+		//await silver2coin()
 		let vipMessage = ''
 		if (config.user.vipStatus === 1) {
 			$.log("---- 开始大会员额外任务")
@@ -253,7 +253,7 @@ async function signBiliBili() {
 				`经验:当前${config.user.level_info.current_exp}/下级${config.user.level_info.next_exp}/满级28800\n` +
 				`等级:当前${config.user.level_info.current_level}级 升满级最快需${Math.max(0, Math.ceil(config.user.v6_exp / 65))}天` + vipMessage
 		}
-		$.msg(notice.title, notice.subTitle, notice.content)
+		//$.msg(notice.title, notice.subTitle, notice.content)
 	} else {
 		$.msg(`${$.name} 任务失败`,`📅 ${startTime}`, "🤒请更新cookie")
 	}
