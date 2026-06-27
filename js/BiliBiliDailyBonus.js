@@ -282,7 +282,7 @@ async function getQrcode() {
 	return await $.fetch(myRequest).then(response => {
 		try {
 			const body = $.toObj(response.body)
-			if (body.code === 0 && body.message === "0") {
+			if (body.code === 0 && body.message === "OK") {
 				let media_url = `https://tool.lu/qrcode/basic.html?text=https://passport.bilibili.com/x/passport-tv-login/h5/qrcode/auth?auth_code=${body.data.auth_code}&mobi_app=iphone`
 				$.msg($.name + "扫码", "使用客户端扫描以下二维码", "请20s内完成扫码,长按推送可放大二维码图片", { 'open-url': media_url, 'media-url': media_url })
 				$.log("二维码已生成，如在通知中获取图片失败，请20s内使用浏览器打开以下地址\n" + `${media_url}`)
@@ -315,7 +315,7 @@ async function loginConfirm(auth_code) {
 	return await $.fetch(myRequest).then(response => {
 		try {
 			const body = $.toObj(response.body)
-			if (body.code === 0 && body.message === "0") {
+			if (body.code === 0 && body.message === "OK") {
 				$.log("- 确认登录成功")
 				const cookieStr = body.data.cookie_info.cookies.map(c => `${c.name}=${c.value}`).join('; ');
 				[config.cookieStr, config.cookie, config.key] = [cookieStr, string2object(cookieStr), body.data.access_token];
@@ -468,7 +468,7 @@ async function coin() {
 			await $.fetch(myRequest).then(async response => {
 				try {
 					const body = $.toObj(response.body)
-					if (body?.code === 0 && body?.message === "0") {
+					if (body?.code === 0 && (body?.message === "0" || body?.message === "OK")) {
 						$.log("- 投币成功")
 						config.user.money -= 1
 						config.coins.num += 10
